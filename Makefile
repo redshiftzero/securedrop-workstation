@@ -61,6 +61,12 @@ sd-export: prep-salt ## Provisions SD Export VM
 	sudo qubesctl --show-output --targets sd-export-template state.highstate
 	sudo qubesctl --show-output --targets sd-export-export-dvm state.highstate
 
+sd-log: prep-salt ## Provisions SD logging VM
+	sudo qubesctl top.enable sd-log
+	sudo qubesctl top.enable sd-log-template-files
+	sudo qubesctl --show-output --targets sd-log-template state.highstate
+	sudo qubesctl --show-output --targets sd-log state.highstate
+
 clean-salt: assert-dom0 ## Purges SD Salt configuration from dom0
 	@echo "Purging Salt config..."
 	@sudo rm -rf /srv/salt/sd
@@ -88,6 +94,9 @@ remove-sd-gpg: assert-dom0 ## Destroys SD GPG keystore VM
 remove-sd-export: assert-dom0 ## Destroys SD EXPORT VMs
 	@./scripts/destroy-vm sd-export-usb
 	@./scripts/destroy-vm sd-export-usb-dvm
+
+remove-sd-log: assert-dom0 ## Destroys SD logging VM
+	@./scripts/destroy-vm sd-log
 
 clean: assert-dom0 destroy-all clean-salt ## Destroys all SD VMs
 	sudo dnf -y -q remove securedrop-workstation-dom0-config 2>/dev/null || true
